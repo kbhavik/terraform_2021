@@ -61,8 +61,7 @@ resource "aws_internet_gateway" "myapp-igw" {
     route_table_id = aws_route_table.myapp-route-table.id
 }*/
 
-resource "aws_security_group" "myapp-sg" {
-    name = "myapp-sg"
+resource "aws_default_security_group" "default-sg" {
     vpc_id = aws_vpc.myapp-vpc.id
 
     ingress {
@@ -88,6 +87,6 @@ resource "aws_security_group" "myapp-sg" {
     }
     
     tags = {
-      "Name" = "${var.env_prefix}-sg"
+      "Name" = "${var.env_prefix}-default-sg"
     }
 }
