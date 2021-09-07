@@ -113,9 +113,19 @@ resource "aws_instance" "myapp-server" {
     availability_zone = var.avail_zone
 
     associate_public_ip_address = true
-    key_name = "myapp-server-key-pair.pem"
+    key_name = "myapp-server-key-pair"
 
     tags = {
       "Name" = "${var.env_prefix}-server"
     }
+}
+
+data "aws_instance" "public-ip" {
+    instance_tags = {
+      "Name" = "${var.env_prefix}-server"
+    }
+}
+
+output "ec2-public-ip" {
+    value = data.aws_instance.public-ip.public_ip
 }
