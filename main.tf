@@ -3,14 +3,6 @@ region = "us-east-2"
 #aws configure command
 }
 
-variable "vpc_cidr_block" {}
-variable "subnet_cidr_block" {}
-variable "avail_zone" {} #set TF_VAR_avail_zone="us-east-2a"
-variable "env_prefix" {}
-variable "my_ip" {}
-variable "instance_type" {}
-variable "public_key_location" {}
-
 resource "aws_vpc" "myapp-vpc" {
     cidr_block = var.vpc_cidr_block
     tags = {
@@ -26,18 +18,6 @@ resource "aws_subnet" "myapp-subnet-1" {
       "Name" = "${var.env_prefix}-subnet-1"
     }
 }
-
-/*resource "aws_route_table" "myapp-route-table" {
-    vpc_id = aws_vpc.myapp-vpc.id
-
-    route {
-        cidr_block = "0.0.0.0/0"
-        gateway_id = aws_internet_gateway.myapp-igw.id
-    }
-    tags = {
-      "Name" = "${var.env_prefix}-rtb"
-    }
-}*/
 
 resource "aws_default_route_table" "main-rtb" {
     default_route_table_id = aws_vpc.myapp-vpc.default_route_table_id
@@ -102,10 +82,6 @@ data "aws_ami" "latest-amazon-linux-image" {
     }
 }
 
-/*output "aws-ami-id" {
-    value = data.aws_ami.latest-amazon-linux-image.id
-}*/
-
 resource "aws_key_pair" "ssh-key" {
     key_name = "server-key"
     public_key = file(var.public_key_location)
@@ -127,8 +103,4 @@ resource "aws_instance" "myapp-server" {
     tags = {
       "Name" = "${var.env_prefix}-server"
     }
-}
-
-output "ec2-public-ip" {
-    value = aws_instance.myapp-server.public_ip
 }
